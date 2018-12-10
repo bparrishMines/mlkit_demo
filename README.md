@@ -9,13 +9,13 @@ firebase_ml_vision:
   git:
     url: git://github.com/bparrishMines/plugins.git
     path: packages/firebase_ml_vision
-    ref: demo_all
+    ref: mlkit_android_2
 
 camera:
   git:
     url: git://github.com/bparrishMines/plugins.git
     path: packages/camera
-    ref: demo_all
+    ref: camera_android_2
 ```
 
 This plugin uses a forked repository of the `camera` and `firebase_ml_vision` plugins to incorporate

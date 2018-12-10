@@ -20,19 +20,17 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
 
-  native_device_orientation: ^0.0.3
-
   firebase_ml_vision:
-      git:
-        url: git://github.com/bparrishMines/plugins.git
-        path: packages/firebase_ml_vision
-        ref: demo_all
+    git:
+      url: git://github.com/bparrishMines/plugins.git
+      path: packages/firebase_ml_vision
+      ref: mlkit_android_2
 
   camera:
-      git:
-        url: git://github.com/bparrishMines/plugins.git
-        path: packages/camera
-        ref: demo_all
+    git:
+      url: git://github.com/bparrishMines/plugins.git
+      path: packages/camera
+      ref: camera_android_2
 
 dev_dependencies:
   flutter_test:

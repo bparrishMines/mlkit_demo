@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
@@ -41,10 +42,10 @@ class FaceExpressionReader extends ValueNotifier<Face> {
 
     _controller = new CameraController(frontCamera, ResolutionPreset.medium);
     _controller.initialize().then((_) {
-      _controller.startByteStream((Uint8List bytes) {
+      _controller.startByteStream((CameraImage image) {
         if (!_isDetecting) {
           _isDetecting = true;
-          _runDetection(bytes);
+          _runDetection(image);
         }
       });
     });
@@ -62,19 +63,45 @@ class FaceExpressionReader extends ValueNotifier<Face> {
     value = null;
   }
 
-  void _runDetection(Uint8List bytes) async {
-    final List<Face> faces = await detector.detectInImage(
-      FirebaseVisionImage.fromBytes(
-        bytes,
-        FirebaseVisionImageMetadata(
-          size: _controller.value.previewSize,
-          rotation: ImageRotation.rotation_270,
+  void _runDetection(CameraImage image) async {
+    final int numBytes =
+        image.planes.fold(0, (count, plane) => count += plane.bytes.length);
+    final Uint8List allBytes = Uint8List(numBytes);
+
+    int nextIndex = 0;
+    for (int i = 0; i < image.planes.length; i++) {
+      allBytes.setRange(nextIndex, nextIndex + image.planes[i].bytes.length,
+          image.planes[i].bytes);
+      nextIndex += image.planes[i].bytes.length;
+    }
+
+    try {
+      final List<Face> faces = await detector.detectInImage(
+        FirebaseVisionImage.fromBytes(
+          allBytes,
+          FirebaseVisionImageMetadata(
+              rawFormat: image.format.raw,
+              size: Size(image.width.toDouble(), image.height.toDouble()),
+              rotation: ImageRotation.rotation_270,
+              planeData: image.planes
+                  .map((plane) =>
+                  FirebaseVisionImagePlaneMetadata(
+                    bytesPerRow: plane.bytesPerRow,
+                    height: plane.height,
+                    width: plane.width,
+                  ))
+                  .toList()),
         ),
-      ),
-    );
+      );
 
-    if (faces.isNotEmpty) value = faces[0];
-
-    _isDetecting = false;
+      if (faces.isNotEmpty) {
+        value = faces[0];
+      }
+    } catch (exception) {
+      print(exception);
+    } finally {
+      _isDetecting = false;
+    }
   }
 }
+

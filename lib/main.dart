@@ -14,7 +14,7 @@ class CameraApp extends StatefulWidget {
   _CameraAppState createState() => new _CameraAppState();
 }
 
-class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
+class _CameraAppState extends State<CameraApp> {
   final FaceExpressionReader reader = FaceExpressionReader.instance;
 
   @override
@@ -24,21 +24,10 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
       setState(() {});
     });
     reader.init();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive) {
-      reader.suspend();
-    } else if (state == AppLifecycleState.resumed) {
-      reader.init();
-    }
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     reader.dispose();
     super.dispose();
   }
@@ -58,7 +47,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
     return new Material(
       child: new Center(
         child: Transform.rotate(
-          angle: radians(reader?.headAngleZ ?? 0.0),
+          angle: radians(reader.headAngleZ),
           child: new Text(
             _expressionToEmoji(),
             style: TextStyle(fontSize: 120.0),
