@@ -4,4 +4,4 @@
 
 3. Include `camera` and `firebase_ml_vision` plugin in your project and follow instructions on camera permissions.
 
-3. Include `main.dart`, `utils.dart`, and `detector_painters.dart` in your lib folder.
+3. Include `main.dart`, `utils.dart`, and `detector_painters.dart` in your lib folder.g
