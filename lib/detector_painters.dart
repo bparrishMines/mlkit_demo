@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
@@ -162,7 +161,7 @@ class TextDetectorPainter extends CustomPainter {
 }
 
 Rect _scaleAndFlipRectangle({
-  @required Rectangle<int> rect,
+  @required Rect rect,
   @required Size imageSize,
   @required Size widgetSize,
   bool shouldScaleX = true,
