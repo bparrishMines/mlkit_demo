@@ -33,7 +33,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   void _initializeCamera() async {
     _camera = CameraController(
       await getCamera(_direction),
-      ResolutionPreset.medium,
+      ResolutionPreset.low,
     );
     await _camera.initialize();
 
@@ -77,10 +77,12 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Widget _buildResults() {
+    const Text noResultsText = const Text('No results!');
+
     if (_scanResults == null ||
         _camera == null ||
         !_camera.value.isInitialized) {
-      return const Text('No results!');
+      return noResultsText;
     }
 
     CustomPainter painter;
@@ -92,19 +94,24 @@ class _MyHomePageState extends State<_MyHomePage> {
 
     switch (_currentDetector) {
       case Detector.barcode:
+        if (_scanResults is! List<Barcode>) return noResultsText;
         painter = BarcodeDetectorPainter(imageSize, _scanResults);
         break;
       case Detector.face:
+        if (_scanResults is! List<Face>) return noResultsText;
         painter = FaceDetectorPainter(imageSize, _scanResults);
         break;
       case Detector.label:
+        if (_scanResults is! List<Label>) return noResultsText;
         painter = LabelDetectorPainter(imageSize, _scanResults);
         break;
       case Detector.cloudLabel:
+        if (_scanResults is! List<Label>) return noResultsText;
         painter = LabelDetectorPainter(imageSize, _scanResults);
         break;
       default:
         assert(_currentDetector == Detector.text);
+        if (_scanResults is! VisionText) return noResultsText;
         painter = TextDetectorPainter(imageSize, _scanResults);
     }
 
