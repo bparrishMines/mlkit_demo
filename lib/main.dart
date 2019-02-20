@@ -4,6 +4,7 @@
 
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'detector_painters.dart';
@@ -33,7 +34,9 @@ class _MyHomePageState extends State<_MyHomePage> {
   void _initializeCamera() async {
     _camera = CameraController(
       await getCamera(_direction),
-      ResolutionPreset.low,
+      defaultTargetPlatform == TargetPlatform.iOS
+          ? ResolutionPreset.low
+          : ResolutionPreset.medium,
     );
     await _camera.initialize();
 
