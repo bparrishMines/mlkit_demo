@@ -16,4 +16,4 @@ included.
 and follow instructions on including camera access permissions. Pay close attention to the
 `README.md` of both plugins to make sure everything is properly setup.
 
-3. Include `main.dart`, `utils.dart`, and `detector_painters.dart` in your project's lib folder.
+3. Include `lib/main.dart`, `lib/utils.dart`, and `lib/detector_painters.dart` in your project's lib folder.
