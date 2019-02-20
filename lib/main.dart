@@ -33,7 +33,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   void _initializeCamera() async {
     _camera = CameraController(
       await getCamera(_direction),
-      ResolutionPreset.low,
+      ResolutionPreset.medium,
     );
     await _camera.initialize();
 
@@ -42,21 +42,16 @@ class _MyHomePageState extends State<_MyHomePage> {
 
       _isDetecting = true;
 
-      final Detector currentDetector = _currentDetector;
       detect(image, _getDetectionMethod()).then(
-            (dynamic result) {
-          if (currentDetector == _currentDetector) {
+        (dynamic result) {
+          setState(() {
             _scanResults = result;
-          } else {
-            _scanResults = null;
-          }
-
-          setState(() {});
+          });
 
           _isDetecting = false;
         },
       ).catchError(
-            (_) {
+        (_) {
           _isDetecting = false;
         },
       );
@@ -82,7 +77,9 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Widget _buildResults() {
-    if (_scanResults == null || _camera == null) {
+    if (_scanResults == null ||
+        _camera == null ||
+        !_camera.value.isInitialized) {
       return const Text('No results!');
     }
 
@@ -121,21 +118,21 @@ class _MyHomePageState extends State<_MyHomePage> {
       constraints: const BoxConstraints.expand(),
       child: _camera == null
           ? const Center(
-        child: Text(
-          'Initializing Camera...',
-          style: TextStyle(
-            color: Colors.green,
-            fontSize: 30.0,
-          ),
-        ),
-      )
+              child: Text(
+                'Initializing Camera...',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 30.0,
+                ),
+              ),
+            )
           : Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          CameraPreview(_camera),
-          _buildResults(),
-        ],
-      ),
+              fit: StackFit.expand,
+              children: <Widget>[
+                CameraPreview(_camera),
+                _buildResults(),
+              ],
+            ),
     );
   }
 
@@ -167,27 +164,27 @@ class _MyHomePageState extends State<_MyHomePage> {
               _currentDetector = result;
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<Detector>>[
-              const PopupMenuItem<Detector>(
-                child: Text('Detect Barcode'),
-                value: Detector.barcode,
-              ),
-              const PopupMenuItem<Detector>(
-                child: Text('Detect Face'),
-                value: Detector.face,
-              ),
-              const PopupMenuItem<Detector>(
-                child: Text('Detect Label'),
-                value: Detector.label,
-              ),
-              const PopupMenuItem<Detector>(
-                child: Text('Detect Cloud Label'),
-                value: Detector.cloudLabel,
-              ),
-              const PopupMenuItem<Detector>(
-                child: Text('Detect Text'),
-                value: Detector.text,
-              ),
-            ],
+                  const PopupMenuItem<Detector>(
+                    child: Text('Detect Barcode'),
+                    value: Detector.barcode,
+                  ),
+                  const PopupMenuItem<Detector>(
+                    child: Text('Detect Face'),
+                    value: Detector.face,
+                  ),
+                  const PopupMenuItem<Detector>(
+                    child: Text('Detect Label'),
+                    value: Detector.label,
+                  ),
+                  const PopupMenuItem<Detector>(
+                    child: Text('Detect Cloud Label'),
+                    value: Detector.cloudLabel,
+                  ),
+                  const PopupMenuItem<Detector>(
+                    child: Text('Detect Text'),
+                    value: Detector.text,
+                  ),
+                ],
           ),
         ],
       ),

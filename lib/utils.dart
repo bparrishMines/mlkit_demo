@@ -8,10 +8,11 @@ import 'package:flutter/foundation.dart';
 typedef HandleDetection = Future<dynamic> Function(FirebaseVisionImage image);
 
 Future<CameraDescription> getCamera(CameraLensDirection dir) async {
-  return await availableCameras().then((List<CameraDescription> cameras) =>
-      cameras.firstWhere((CameraDescription camera) {
-        return camera.lensDirection == dir;
-      }));
+  return await availableCameras().then(
+    (List<CameraDescription> cameras) => cameras.firstWhere(
+          (CameraDescription camera) => camera.lensDirection == dir,
+        ),
+  );
 }
 
 Uint8List concatenatePlanes(List<Plane> planes) {
@@ -26,7 +27,7 @@ FirebaseVisionImageMetadata buildMetaData(CameraImage image) =>
       size: Size(image.width.toDouble(), image.height.toDouble()),
       rotation: ImageRotation.rotation270,
       planeData: image.planes.map(
-            (Plane plane) {
+        (Plane plane) {
           return FirebaseVisionImagePlaneMetadata(
             bytesPerRow: plane.bytesPerRow,
             height: plane.height,
@@ -37,9 +38,9 @@ FirebaseVisionImageMetadata buildMetaData(CameraImage image) =>
     );
 
 Future<dynamic> detect(
-    CameraImage image,
-    HandleDetection handleDetection,
-    ) async {
+  CameraImage image,
+  HandleDetection handleDetection,
+) async {
   return handleDetection(
     FirebaseVisionImage.fromBytes(
       concatenatePlanes(image.planes),
