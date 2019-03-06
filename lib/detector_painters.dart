@@ -25,12 +25,10 @@ class BarcodeDetectorPainter extends CustomPainter {
     for (Barcode barcode in barcodes) {
       paint.color = Colors.green;
       canvas.drawRect(
-        _scaleAndFlipRectangle(
+        _scaleRect(
           rect: barcode.boundingBox,
           imageSize: imageSize,
           widgetSize: size,
-          shouldFlipX: defaultTargetPlatform != TargetPlatform.iOS,
-          shouldFlipY: defaultTargetPlatform != TargetPlatform.iOS,
         ),
         paint,
       );
@@ -59,12 +57,10 @@ class FaceDetectorPainter extends CustomPainter {
 
     for (Face face in faces) {
       canvas.drawRect(
-        _scaleAndFlipRectangle(
+        _scaleRect(
           rect: face.boundingBox,
           imageSize: imageSize,
           widgetSize: size,
-          shouldFlipY: false,
-          shouldFlipX: defaultTargetPlatform != TargetPlatform.iOS,
         ),
         paint,
       );
@@ -128,12 +124,10 @@ class TextDetectorPainter extends CustomPainter {
       ..strokeWidth = 2.0;
 
     Rect _getRect(TextContainer container) {
-      return _scaleAndFlipRectangle(
+      return _scaleRect(
         rect: container.boundingBox,
         imageSize: imageSize,
         widgetSize: size,
-        shouldFlipY: defaultTargetPlatform != TargetPlatform.iOS,
-        shouldFlipX: defaultTargetPlatform != TargetPlatform.iOS,
       );
     }
 
@@ -160,42 +154,18 @@ class TextDetectorPainter extends CustomPainter {
   }
 }
 
-Rect _scaleAndFlipRectangle({
+Rect _scaleRect({
   @required Rect rect,
   @required Size imageSize,
   @required Size widgetSize,
-  bool shouldScaleX = true,
-  bool shouldScaleY = true,
-  bool shouldFlipX = true,
-  bool shouldFlipY = true,
 }) {
-  final double scaleX = shouldScaleX ? widgetSize.width / imageSize.width : 1;
-  final double scaleY = shouldScaleY ? widgetSize.height / imageSize.height : 1;
-
-  double left;
-  double right;
-  if (shouldFlipX) {
-    left = imageSize.width - rect.left;
-    right = imageSize.width - rect.right;
-  } else {
-    left = rect.left.toDouble();
-    right = rect.right.toDouble();
-  }
-
-  double top;
-  double bottom;
-  if (shouldFlipY) {
-    top = imageSize.height - rect.top;
-    bottom = imageSize.height - rect.bottom;
-  } else {
-    top = rect.top.toDouble();
-    bottom = rect.bottom.toDouble();
-  }
+  final double scaleX = widgetSize.width / imageSize.width;
+  final double scaleY = widgetSize.height / imageSize.height;
 
   return Rect.fromLTRB(
-    left * scaleX,
-    top * scaleY,
-    right * scaleX,
-    bottom * scaleY,
+    rect.left.toDouble() * scaleX,
+    rect.top.toDouble() * scaleY,
+    rect.right.toDouble() * scaleX,
+    rect.bottom.toDouble() * scaleY,
   );
 }
