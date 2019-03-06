@@ -32,8 +32,13 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   void _initializeCamera() async {
+    CameraDescription description = await getCamera(_direction);
+    ImageRotation rotation = rotationIntToImageRotation(
+      description.sensorOrientation,
+    );
+
     _camera = CameraController(
-      await getCamera(_direction),
+      description,
       defaultTargetPlatform == TargetPlatform.iOS
           ? ResolutionPreset.low
           : ResolutionPreset.medium,
@@ -45,7 +50,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
       _isDetecting = true;
 
-      detect(image, _getDetectionMethod()).then(
+      detect(image, _getDetectionMethod(), rotation).then(
         (dynamic result) {
           setState(() {
             _scanResults = result;
