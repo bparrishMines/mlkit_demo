@@ -1,3 +1,5 @@
+# [Deprecated] See [firebase_ml_vision example app](https://github.com/flutter/plugins/tree/master/packages/firebase_ml_vision/example) for updated Live Camera Preview examples.
+
 # Flutter Live Camera with ML Kit Example Project
 
 This project displays a live camera preview that highlights detected barcodes/faces/labels/text
